@@ -1,0 +1,83 @@
+{% from 'macros.html' import comment_div %}
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/static/main.css" />
+    <script src="/static/zoom.js"></script>
+    <title>Document</title>
+  </head>
+  <body class="bg-slate-950">
+    <div id="image_viewport" class="relative h-screen w-screen overflow-hidden">
+      <div id="image_wrapper" class="absolute">
+        <img
+          src="{{ request.url_for('image_media', id=id) }}"
+          class="h-full w-full object-contain"
+        />
+
+        {% for comment in comments %}
+          <div
+            id="{{ comment.id }}"
+            tabindex="-1"
+            class="box absolute rounded-sm border-2 border-solid border-red-400 focus:border-red-900 focus:bg-red-900 focus:opacity-50"
+            style="top: {{ comment.anchor.top }}%; left: {{ comment.anchor.left }}%; width: {{ comment.anchor.width }}%; height: {{ comment.anchor.height }}%;"
+          ></div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div
+      class="pointer-events-none absolute top-0 flex h-screen max-h-screen w-screen flex-grow"
+    >
+      {% if folder_id %}
+        <div class="m-2 basis-1/6">
+          <a
+            type="button"
+            class="pointer-events-auto rounded-md bg-slate-700 px-2 py-1 hover:bg-slate-800"
+            href="{{ url_for('folder', id=folder_id) }}"
+          >
+            Folder
+          </a>
+        </div>
+      {% endif %}
+      <div id="spacer" class="grow"></div>
+      <div
+        id="comments"
+        class="pointer-events-auto flex max-h-screen min-w-[30ch] basis-1/4 flex-col gap-2 overflow-y-auto overflow-x-hidden p-2"
+      >
+        {% for comment in comments %}
+          {{ comment_div(comment, loop.index) }}
+        {% endfor %}
+      </div>
+    </div>
+    <div
+      id="create_comment"
+      class="flex flex-col gap-2 rounded-md bg-slate-700 p-2"
+      style="display: none;"
+    >
+      <textarea
+        name="comment"
+        id="new_comment_textarea"
+        class="w-full bg-slate-800 px-2 py-1"
+      ></textarea>
+      <div class="flex gap-2">
+        <button
+          type="button"
+          id="cancel"
+          class="rounded-md bg-slate-700 px-2 py-1 hover:bg-slate-800"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          id="submit"
+          class="rounded-md bg-slate-700 px-2 py-1 hover:bg-slate-800"
+        >
+          Comment
+        </button>
+      </div>
+    </div>
+  </body>
+</html>

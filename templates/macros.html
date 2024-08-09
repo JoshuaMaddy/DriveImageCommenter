@@ -1,0 +1,39 @@
+{%- macro reply_div(reply) -%}
+  <div class="rounded-md bg-slate-700 p-2">
+    <div class="flex content-baseline gap-1">
+      <img
+        src="https:{{ reply.author.photo_link }}"
+        alt="User Icon"
+        class="h-8 w-8 object-cover"
+      />
+      <p>{{ reply.author.display_name }}</p>
+    </div>
+    <div>{{ reply.html_content|safe }}</div>
+  </div>
+{%- endmacro -%}
+
+{%- macro comment_div(comment, tabindex) -%}
+  <div
+    class="comment flex flex-col gap-2 rounded-md bg-slate-700 p-2 focus:bg-slate-800"
+    id="{{ comment.id }}"
+    tabindex="{{ tabindex }}"
+  >
+    <div class="flex w-full justify-between gap-1">
+      <div class="flex content-center gap-1">
+        <img
+          src="https:{{ comment.author.photo_link }}"
+          alt="User Icon"
+          class="h-8 w-8 object-cover"
+        />
+        <p>{{ comment.author.display_name }}</p>
+      </div>
+      <button type="button" id="reply">
+        <img src="/static/svg/reply.svg" alt="Directory Icon" class="invert" />
+      </button>
+    </div>
+    <div>{{ comment.html_content|safe }}</div>
+    {% for reply in comment.replies %}
+      {{ reply_div(reply) }}
+    {% endfor %}
+  </div>
+{%- endmacro -%}

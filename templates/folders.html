@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/static/main.css" />
+    <title>Document</title>
+  </head>
+
+  <body class="bg-slate-950">
+    <div class="mx-auto my-4 flex max-w-4xl flex-col gap-4">
+      <a
+        href="/"
+        class="rounded-md bg-slate-700 px-2 py-1 text-2xl hover:bg-slate-800"
+        >All Folders</a
+      >
+      {% if parents %}
+        <div class="flex flex-col gap-2">
+          <h1 class="text-2xl">Parent(s)</h1>
+          {% for parent in parents %}
+            <div class="flex gap-2">
+              <img
+                src="/static/svg/file-directory-fill.svg"
+                alt="Directory Icon"
+                class="recolor"
+              />
+              <a href="{{ request.url_for('folder', id=parent.id) }}"
+                >{{ parent.name }}</a
+              >
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+      {% if files or folders %}
+        <div class="flex flex-col gap-2">
+          <h1 class="text-2xl">
+            {{ folder.name if folder else "All Root Folders" }}
+          </h1>
+          <hr class="text-slate-600" />
+          {% for folder_ in folders %}
+            <div class="flex gap-2">
+              <img
+                src="/static/svg/file-directory-fill.svg"
+                alt="Directory Icon"
+                class="recolor"
+              />
+              <a href="{{ request.url_for('folder', id=folder_.id) }}"
+                >{{ folder_.name }}</a
+              >
+            </div>
+          {% endfor %}
+          {% for file in files %}
+            {% if "image" in file.mimetype %}
+              <div class="flex gap-2">
+                <img
+                  src="/static/svg/file-media.svg"
+                  alt="Directory Icon"
+                  class="recolor"
+                />
+                <a
+                  href="{{ request.url_for('image', id=file.id).include_query_params(folder_id=folder.id) }}"
+                  >{{ file.name }}</a
+                >
+              </div>
+            {% else %}
+              <div class="flex gap-2">
+                <img
+                  src="/static/svg/file.svg"
+                  alt="Directory Icon"
+                  class="recolor"
+                />
+                <p>{{ file.name }} - {{ file.mimetype }}</p>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+  </body>
+</html>
