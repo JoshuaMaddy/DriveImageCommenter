@@ -10,12 +10,20 @@ if TYPE_CHECKING:
 from .models.file import File
 
 
-def get_all_files(query: str, drive_service: DriveResource) -> list[File]:
+def get_all_files(
+    query: str,
+    drive_service: DriveResource,
+    order_by: str = "name_natural",
+) -> list[File]:
     files: list[File] = []
 
     results = (
         drive_service.files()
-        .list(q=query, fields="files(kind, mimeType, id, name, parents)")
+        .list(
+            q=query,
+            fields="files(kind, mimeType, id, name, parents)",
+            orderBy=order_by,
+        )
         .execute()
     )
 

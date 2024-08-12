@@ -11,12 +11,21 @@ if TYPE_CHECKING:
 
 
 def get_all_root_folders(drive_service: DriveResource) -> list[File]:
-    query = "mimeType = 'application/vnd.google-apps.folder'"
+    query = "'root' in parents and mimeType = 'application/vnd.google-apps.folder'"
     folders = get_all_files(query=query, drive_service=drive_service)
 
-    root_folders = list(filter(lambda x: x.parents is None, folders))
+    return folders
 
-    return root_folders
+
+def get_shared_with_me(drive_service: DriveResource) -> list[File]:
+    query = "mimeType = 'application/vnd.google-apps.folder' and sharedWithMe = true"
+    folders = get_all_files(
+        query=query,
+        drive_service=drive_service,
+        order_by="viewedByMeTime desc",
+    )
+
+    return folders
 
 
 def get_all_files_in_folder(folder_id: str, drive_service: DriveResource) -> list[File]:
